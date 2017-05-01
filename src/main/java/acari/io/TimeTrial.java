@@ -2,6 +2,7 @@ package acari.io;
 
 import acari.io.pojo.DataSerializableProgrammer;
 import acari.io.pojo.ExternalizableProgrammer;
+import acari.io.pojo.IdentifiedDataSerializableProgrammer;
 import acari.io.pojo.Programmer;
 import com.hazelcast.core.IMap;
 import com.hazelcast.nio.serialization.DataSerializable;
@@ -64,9 +65,9 @@ public class TimeTrial {
         logger.info("Reading " + programmerDS.size() + " " + "Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         programmerDS.clear();
 
-        IMap<String, DataSerializableProgrammer> programmerIDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ids");
+        IMap<String, IdentifiedDataSerializableProgrammer> programmerIDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ids");
         before = Instant.now();
-        programmerRepository.getProgrammers().map(DataSerializableProgrammer::new).forEach(programmer1 -> programmerIDS.set(programmer1.getName(), programmer1));
+        programmerRepository.getProgrammers().map(IdentifiedDataSerializableProgrammer::new).forEach(programmer1 -> programmerIDS.set(programmer1.getName(), programmer1));
         after = Instant.now();
         logger.info("Writing " + programmerIDS.size() + " " + "Identified Data Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         before = Instant.now();
