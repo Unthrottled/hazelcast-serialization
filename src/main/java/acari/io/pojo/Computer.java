@@ -8,7 +8,7 @@ public class Computer implements Serializable {
     private final int ram;
     private final String make;
 
-    public Computer(String model, String subModel, int ram, String make) {
+    public Computer(int ram, String make, String model, String subModel) {
         this.model = model;
         this.subModel = subModel;
         this.ram = ram;
