@@ -22,9 +22,9 @@ import java.util.stream.Stream;
 
 @Component
 public class ProgrammerRepository {
+    public static final int PROGRAMMER_PER_THREAD = 10000;
     private static final Logger logger = LoggerFactory.getLogger(ProgrammerRepository.class);
     private static final int THREADS = 4;
-    public static final int PROGRAMMER_PER_THREAD = 10000;
     private final SecureRandom secureRandom = new SecureRandom();
     private final Random ranbo = new Random(9001);
     private final ComputerRepository computerRepository;
@@ -57,7 +57,7 @@ public class ProgrammerRepository {
         }
     }
 
-    public Stream<Programmer> getProgrammers(){
+    public Stream<Programmer> getProgrammers() {
         return programmerCollection.parallelStream();
     }
 

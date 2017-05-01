@@ -4,10 +4,7 @@ import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
 import com.hazelcast.nio.serialization.DataSerializable;
 
-import java.io.Externalizable;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +32,10 @@ public class DataSerializableProgrammer implements DataSerializable {
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeUTF(name);
         out.writeInt(age);
-        int size = languages == null?-1:languages.size();
+        int size = languages == null ? -1 : languages.size();
         out.writeInt(size);
 
-        for(int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             out.writeUTF(languages.get(i));
         }
         computer.writeData(out);
@@ -49,9 +46,9 @@ public class DataSerializableProgrammer implements DataSerializable {
         name = in.readUTF();
         age = in.readInt();
         int size = in.readInt();
-        if(size > -1) {
+        if (size > -1) {
             languages = new ArrayList<>(size);
-            for(int i = 0; i < size; ++i) {
+            for (int i = 0; i < size; ++i) {
                 languages.add(i, in.readUTF());
             }
         }

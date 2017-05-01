@@ -27,10 +27,10 @@ public class ExternalizableProgrammer implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(name);
         out.writeInt(age);
-        int size = languages == null?-1:languages.size();
+        int size = languages == null ? -1 : languages.size();
         out.writeInt(size);
 
-        for(int i = 0; i < size; ++i) {
+        for (int i = 0; i < size; ++i) {
             out.writeUTF(languages.get(i));
         }
         computer.writeExternal(out);
@@ -41,9 +41,9 @@ public class ExternalizableProgrammer implements Externalizable {
         name = in.readUTF();
         age = in.readInt();
         int size = in.readInt();
-        if(size > -1) {
+        if (size > -1) {
             languages = new ArrayList<>(size);
-            for(int i = 0; i < size; ++i) {
+            for (int i = 0; i < size; ++i) {
                 languages.add(i, in.readUTF());
             }
         }

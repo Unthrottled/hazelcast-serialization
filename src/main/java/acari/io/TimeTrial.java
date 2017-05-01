@@ -9,7 +9,6 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -34,7 +33,7 @@ public class TimeTrial {
     }
 
     @PreDestroy
-    public void onlyDreams(){
+    public void onlyDreams() {
         logger.info("Shutting Down Hazelcast");
         hazelcastInstance.shutdown();
         logger.info("Hazelcast shutdown.");

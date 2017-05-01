@@ -7,8 +7,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class HazelcastSerializationApplication {
 
-	public static void main(String[] args) {
-		ConfigurableApplicationContext run = SpringApplication.run(HazelcastSerializationApplication.class, args);
-		SpringApplication.exit(run);
-	}
+    public static void main(String[] args) {
+        ConfigurableApplicationContext run = SpringApplication.run(HazelcastSerializationApplication.class, args);
+        SpringApplication.exit(run);
+    }
 }
