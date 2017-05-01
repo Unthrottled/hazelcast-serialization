@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @Component
 public class ProgrammerRepository {
     private static final Logger logger = LoggerFactory.getLogger(ProgrammerRepository.class);
-    private static final int THREADS = 16;
+    private static final int THREADS = 4;
     private final SecureRandom secureRandom = new SecureRandom();
     private final Random ranbo = new Random(9001);
     private final ComputerRepository computerRepository;
@@ -44,7 +44,7 @@ public class ProgrammerRepository {
                 .limit(THREADS)
                 .map(i -> executorService.submit(() -> Stream.generate(integerSupplier)
                         .limit(100000)
-                        .map(j -> new Programmer(new BigInteger(2048, secureRandom).toString(32),
+                        .map(j -> new Programmer(new BigInteger(128, secureRandom).toString(32),
                                 ranbo.nextInt(64), computerRepository.randomComputer(), languageRepository.randomLanguages()))
                         .collect(Collectors.toList()))).collect(Collectors.toCollection(LinkedList::new));
         for (Future<List<Programmer>> futureProgrammer : futureProgrammers) {
