@@ -1,8 +1,10 @@
 package acari.io;
 
+import acari.io.pojo.DataSerializableProgrammer;
 import acari.io.pojo.ExternalizableProgrammer;
 import acari.io.pojo.Programmer;
 import com.hazelcast.core.IMap;
+import com.hazelcast.nio.serialization.DataSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,6 @@ public class TimeTrial {
         logger.info("Reading " + programmer.size() + " " + "Regular Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         programmer.clear();
 
-
         IMap<String, ExternalizableProgrammer> programmerExt = hazelcastServer.getHazelcastInstance().getMap("programmer-ext");
         before = Instant.now();
         programmerRepository.getProgrammers().map(ExternalizableProgrammer::new).forEach(programmer1 -> programmerExt.set(programmer1.getName(), programmer1));
@@ -52,7 +53,16 @@ public class TimeTrial {
         logger.info("Reading " + programmerExt.size() + " " + "Externalizable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         programmerExt.clear();
 
-
+        IMap<String, DataSerializableProgrammer> programmerDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ds");
+        before = Instant.now();
+        programmerRepository.getProgrammers().map(DataSerializableProgrammer::new).forEach(programmer1 -> programmerDS.set(programmer1.getName(), programmer1));
+        after = Instant.now();
+        logger.info("Writing " + programmerDS.size() + " " + "Data Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        before = Instant.now();
+        programmerDS.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
+        after = Instant.now();
+        logger.info("Reading " + programmerDS.size() + " " + "Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        programmerDS.clear();
     }
 
 }
