@@ -21,8 +21,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-public class ProgrammerRepostitory {
-    private static final Logger logger = LoggerFactory.getLogger(ProgrammerRepostitory.class);
+public class ProgrammerRepository {
+    private static final Logger logger = LoggerFactory.getLogger(ProgrammerRepository.class);
     private static final int THREADS = 16;
     private final SecureRandom secureRandom = new SecureRandom();
     private final Random ranbo = new Random(9001);
@@ -32,7 +32,7 @@ public class ProgrammerRepostitory {
     private ExecutorService executorService = Executors.newFixedThreadPool(THREADS);
 
     @Autowired
-    public ProgrammerRepostitory(ComputerRepository computerRepository, LanguageRepository languageRepository) {
+    public ProgrammerRepository(ComputerRepository computerRepository, LanguageRepository languageRepository) {
         this.computerRepository = computerRepository;
         this.languageRepository = languageRepository;
     }

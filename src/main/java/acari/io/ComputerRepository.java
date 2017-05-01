@@ -30,7 +30,7 @@ public class ComputerRepository {
     }
 
     Computer randomComputer() {
-        return COMPUTERS.get(ranbo.nextInt(COMPUTERS.size() + 1));
+        return COMPUTERS.get(ranbo.nextInt(COMPUTERS.size()));
     }
 
     private Computer buildComputer(int ram, String make, String model, String subModel) {
