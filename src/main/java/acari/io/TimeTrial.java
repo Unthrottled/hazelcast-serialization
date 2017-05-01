@@ -63,6 +63,17 @@ public class TimeTrial {
         after = Instant.now();
         logger.info("Reading " + programmerDS.size() + " " + "Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         programmerDS.clear();
+
+        IMap<String, DataSerializableProgrammer> programmerIDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ids");
+        before = Instant.now();
+        programmerRepository.getProgrammers().map(DataSerializableProgrammer::new).forEach(programmer1 -> programmerIDS.set(programmer1.getName(), programmer1));
+        after = Instant.now();
+        logger.info("Writing " + programmerIDS.size() + " " + "Identified Data Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        before = Instant.now();
+        programmerIDS.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
+        after = Instant.now();
+        logger.info("Reading " + programmerIDS.size() + " " + "Identified Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        programmerIDS.clear();
     }
 
 }

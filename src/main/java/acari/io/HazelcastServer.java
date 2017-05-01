@@ -1,5 +1,6 @@
 package acari.io;
 
+import acari.io.pojo.IdentifiedDataSerializableProgrammer;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.core.Hazelcast;
@@ -24,6 +25,14 @@ public class HazelcastServer {
     public void setUp() {
         LOGGER.info("Starting up Hazelcast Server!");
         Config serverConfig = new ClasspathXmlConfig("hazelcast.xml");
+        serverConfig.getSerializationConfig().addDataSerializableFactory(IdentifiedDataSerializableProgrammer.FACTORY_ID,
+                i -> {
+                    switch (i) {
+                        case IdentifiedDataSerializableProgrammer.OBJECT_ID:
+                            return new IdentifiedDataSerializableProgrammer();
+                        default:
+                            return null;
+                    }});
         hazelcastInstance = Hazelcast.newHazelcastInstance(serverConfig);
         LOGGER.info("Hazlecast server started!");
     }
