@@ -65,11 +65,11 @@ public class TimeTrial {
         Instant before = Instant.now();
         programmers.forEach(programmer1 -> programmer.set(idFunct.apply(programmer1), programmer1));
         Instant after = Instant.now();
-        logger.info("Writing " + programmer.size() + " " + methodName + " arguments took " + getMillisBetween(before, after) + " milliseconds.");
+        logger.info("Writing {} {}  arguments took {} milliseconds.", programmer.size(), methodName, getMillisBetween(before, after));
         before = Instant.now();
         programmer.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
         after = Instant.now();
-        logger.info("Reading " + programmer.size() + " " + methodName + " arguments took " + getMillisBetween(before, after) + " milliseconds.");
+        logger.info("Reading {} {}  arguments took {} milliseconds.", programmer.size(), methodName, getMillisBetween(before, after));
         programmer.clear();
     }
 
