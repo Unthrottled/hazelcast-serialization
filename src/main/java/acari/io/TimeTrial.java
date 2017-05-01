@@ -1,5 +1,6 @@
 package acari.io;
 
+import acari.io.pojo.ExternalizableProgrammer;
 import acari.io.pojo.Programmer;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
@@ -28,15 +29,30 @@ public class TimeTrial {
     @PostConstruct
     public void doWorkBruv() {
         logger.info("READY TO BLASTOFF");
-        IMap<String, Programmer> programmerIMap = hazelcastServer.getHazelcastInstance().getMap("programmer");
+        IMap<String, Programmer> programmer = hazelcastServer.getHazelcastInstance().getMap("programmer");
         Instant before = Instant.now();
-        programmerRepository.getProgrammers().forEach(programmer -> programmerIMap.set(programmer.getName(), programmer));
+        programmerRepository.getProgrammers().forEach(programmer1 -> programmer.set(programmer1.getName(), programmer1));
         Instant after = Instant.now();
-        logger.info("Writing " + programmerIMap.size() + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        logger.info("Writing " + programmer.size() + " " + "Regular Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
         before = Instant.now();
-        Map<String, Programmer> values = programmerIMap.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
+        programmer.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
         after = Instant.now();
-        logger.info("Reading " + programmerIMap.size() + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        programmerIMap.clear();
+        logger.info("Reading " + programmer.size() + " " + "Regular Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        programmer.clear();
+
+
+        IMap<String, ExternalizableProgrammer> programmerExt = hazelcastServer.getHazelcastInstance().getMap("programmer-ext");
+        before = Instant.now();
+        programmerRepository.getProgrammers().map(ExternalizableProgrammer::new).forEach(programmer1 -> programmerExt.set(programmer1.getName(), programmer1));
+        after = Instant.now();
+        logger.info("Writing " + programmerExt.size() + " " + "Externalizable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        before = Instant.now();
+        programmerExt.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
+        after = Instant.now();
+        logger.info("Reading " + programmerExt.size() + " " + "Externalizable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        programmerExt.clear();
+
+
     }
+
 }
