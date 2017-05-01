@@ -5,7 +5,6 @@ import acari.io.pojo.ExternalizableProgrammer;
 import acari.io.pojo.IdentifiedDataSerializableProgrammer;
 import acari.io.pojo.Programmer;
 import com.hazelcast.core.IMap;
-import com.hazelcast.nio.serialization.DataSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,9 @@ import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class TimeTrial {
@@ -31,50 +32,38 @@ public class TimeTrial {
 
     @PostConstruct
     public void doWorkBruv() {
-        logger.info("READY TO BLASTOFF");
-        IMap<String, Programmer> programmer = hazelcastServer.getHazelcastInstance().getMap("programmer");
+        logger.info("Time trials ready to start!");
+        doTimeTrial(hazelcastServer.getHazelcastInstance().getMap("programmer"),
+                programmerRepository.getProgrammers(), Programmer::getName, "Regular Serializable");
+
+        doTimeTrial(hazelcastServer.getHazelcastInstance().getMap("programmer-ext"),
+                programmerRepository.getProgrammers().map(ExternalizableProgrammer::new),
+                ExternalizableProgrammer::getName, "Externalizable");
+
+        doTimeTrial(hazelcastServer.getHazelcastInstance().getMap("programmer-ds"),
+                programmerRepository.getProgrammers().map(DataSerializableProgrammer::new),
+                DataSerializableProgrammer::getName, "Data Serializable");
+
+        doTimeTrial(hazelcastServer.getHazelcastInstance().getMap("programmer-ids"),
+                programmerRepository.getProgrammers().map(IdentifiedDataSerializableProgrammer::new),
+                IdentifiedDataSerializableProgrammer::getName, "Identified Data Serializable");
+
+        logger.info("Time trials finished!");
+    }
+
+    private <T> void doTimeTrial(IMap<String, T> programmer, Stream<T> programmers, Function<T, String> idFunct, String methodName) {
         Instant before = Instant.now();
-        programmerRepository.getProgrammers().forEach(programmer1 -> programmer.set(programmer1.getName(), programmer1));
+        programmers.forEach(programmer1 -> programmer.set(idFunct.apply(programmer1), programmer1));
         Instant after = Instant.now();
-        logger.info("Writing " + programmer.size() + " " + "Regular Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        logger.info("Writing " + programmer.size() + " " + methodName + " arguments took " + getMillisBetween(before, after) + " milliseconds.");
         before = Instant.now();
         programmer.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
         after = Instant.now();
-        logger.info("Reading " + programmer.size() + " " + "Regular Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
+        logger.info("Reading " + programmer.size() + " " + methodName + " arguments took " + getMillisBetween(before, after) + " milliseconds.");
         programmer.clear();
-
-        IMap<String, ExternalizableProgrammer> programmerExt = hazelcastServer.getHazelcastInstance().getMap("programmer-ext");
-        before = Instant.now();
-        programmerRepository.getProgrammers().map(ExternalizableProgrammer::new).forEach(programmer1 -> programmerExt.set(programmer1.getName(), programmer1));
-        after = Instant.now();
-        logger.info("Writing " + programmerExt.size() + " " + "Externalizable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        before = Instant.now();
-        programmerExt.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
-        after = Instant.now();
-        logger.info("Reading " + programmerExt.size() + " " + "Externalizable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        programmerExt.clear();
-
-        IMap<String, DataSerializableProgrammer> programmerDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ds");
-        before = Instant.now();
-        programmerRepository.getProgrammers().map(DataSerializableProgrammer::new).forEach(programmer1 -> programmerDS.set(programmer1.getName(), programmer1));
-        after = Instant.now();
-        logger.info("Writing " + programmerDS.size() + " " + "Data Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        before = Instant.now();
-        programmerDS.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
-        after = Instant.now();
-        logger.info("Reading " + programmerDS.size() + " " + "Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        programmerDS.clear();
-
-        IMap<String, IdentifiedDataSerializableProgrammer> programmerIDS = hazelcastServer.getHazelcastInstance().getMap("programmer-ids");
-        before = Instant.now();
-        programmerRepository.getProgrammers().map(IdentifiedDataSerializableProgrammer::new).forEach(programmer1 -> programmerIDS.set(programmer1.getName(), programmer1));
-        after = Instant.now();
-        logger.info("Writing " + programmerIDS.size() + " " + "Identified Data Serializable" + " arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        before = Instant.now();
-        programmerIDS.entrySet().parallelStream().collect(Collectors.toConcurrentMap(Map.Entry::getKey, Map.Entry::getValue));
-        after = Instant.now();
-        logger.info("Reading " + programmerIDS.size() + " " + "Identified Data Serializable" +" arguments took " + Duration.between(before, after).toMillis() + " milliseconds.");
-        programmerIDS.clear();
     }
 
+    private long getMillisBetween(Instant before, Instant after) {
+        return Duration.between(before, after).toMillis();
+    }
 }
