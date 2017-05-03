@@ -1,4 +1,4 @@
-package acari.io;
+package io.acari;
 
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Component;

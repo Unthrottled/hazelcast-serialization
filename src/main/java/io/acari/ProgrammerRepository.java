@@ -1,6 +1,6 @@
-package acari.io;
+package io.acari;
 
-import acari.io.pojo.Programmer;
+import io.acari.pojo.Programmer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

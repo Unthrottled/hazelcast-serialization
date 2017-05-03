@@ -1,6 +1,6 @@
-package acari.io;
+package io.acari;
 
-import acari.io.pojo.Computer;
+import io.acari.pojo.Computer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

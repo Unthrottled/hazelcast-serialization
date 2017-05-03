@@ -1,6 +1,6 @@
-package acari.io;
+package io.acari;
 
-import acari.io.pojo.IdentifiedDataSerializableProgrammer;
+import io.acari.pojo.IdentifiedDataSerializableProgrammer;
 import com.hazelcast.config.ClasspathXmlConfig;
 import com.hazelcast.config.Config;
 import org.springframework.context.annotation.Bean;

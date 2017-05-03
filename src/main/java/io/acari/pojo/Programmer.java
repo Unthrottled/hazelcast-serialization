@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import java.io.Serializable;
 import java.util.List;

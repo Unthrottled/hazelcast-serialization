@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataSerializableProgrammer implements DataSerializable {
+    public static final int NULL_LIST = -1;
     private String name;
     private int age;
     private DataSerializableComputer computer;
@@ -32,9 +33,8 @@ public class DataSerializableProgrammer implements DataSerializable {
     public void writeData(ObjectDataOutput out) throws IOException {
         out.writeUTF(name);
         out.writeInt(age);
-        int size = languages == null ? -1 : languages.size();
+        int size = languages == null ? NULL_LIST : languages.size();
         out.writeInt(size);
-
         for (int i = 0; i < size; ++i) {
             out.writeUTF(languages.get(i));
         }
@@ -46,7 +46,7 @@ public class DataSerializableProgrammer implements DataSerializable {
         name = in.readUTF();
         age = in.readInt();
         int size = in.readInt();
-        if (size > -1) {
+        if (size > NULL_LIST) {
             languages = new ArrayList<>(size);
             for (int i = 0; i < size; ++i) {
                 languages.add(i, in.readUTF());

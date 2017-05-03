@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import com.hazelcast.nio.ObjectDataInput;
 import com.hazelcast.nio.ObjectDataOutput;

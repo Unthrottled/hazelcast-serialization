@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.util.List;
 
 public class ExternalizableProgrammer implements Externalizable {
     private static final long serialVersionUID = 6757860161913660513L;
+    public static final int NULL_LIST = -1;
     private String name;
     private int age;
     private ExternalizableComputer computer;
@@ -28,7 +29,7 @@ public class ExternalizableProgrammer implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF(name);
         out.writeInt(age);
-        int size = languages == null ? -1 : languages.size();
+        int size = languages == null ? NULL_LIST : languages.size();
         out.writeInt(size);
 
         for (int i = 0; i < size; ++i) {
@@ -42,7 +43,7 @@ public class ExternalizableProgrammer implements Externalizable {
         name = in.readUTF();
         age = in.readInt();
         int size = in.readInt();
-        if (size > -1) {
+        if (size > NULL_LIST) {
             languages = new ArrayList<>(size);
             for (int i = 0; i < size; ++i) {
                 languages.add(i, in.readUTF());

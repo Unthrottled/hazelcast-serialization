@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import java.io.Externalizable;
 import java.io.IOException;

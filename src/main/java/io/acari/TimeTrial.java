@@ -1,9 +1,9 @@
-package acari.io;
+package io.acari;
 
-import acari.io.pojo.DataSerializableProgrammer;
-import acari.io.pojo.ExternalizableProgrammer;
-import acari.io.pojo.IdentifiedDataSerializableProgrammer;
-import acari.io.pojo.Programmer;
+import io.acari.pojo.DataSerializableProgrammer;
+import io.acari.pojo.ExternalizableProgrammer;
+import io.acari.pojo.IdentifiedDataSerializableProgrammer;
+import io.acari.pojo.Programmer;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
@@ -21,8 +21,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
-
-import static acari.io.ProgrammerRepository.NUM_PROGRAMMERS;
 
 @Component
 public class TimeTrial {
@@ -84,8 +82,8 @@ public class TimeTrial {
             readTimes.accept(getMillisBetween(before, after));
             programmer.clear();
         }
-        logger.info("Writing {} {}  arguments {} times took an average of {} milliseconds.", NUM_PROGRAMMERS, methodName, NUMBER_TRIALS, writeTimes.build().average().orElseThrow(IllegalStateException::new));
-        logger.info("Reading {} {}  arguments {} times took an average of {} milliseconds.", NUM_PROGRAMMERS, methodName, NUMBER_TRIALS, readTimes.build().average().orElseThrow(IllegalStateException::new));
+        logger.info("Writing {} {}  arguments {} times took an average of {} milliseconds.", ProgrammerRepository.NUM_PROGRAMMERS, methodName, NUMBER_TRIALS, writeTimes.build().average().orElseThrow(IllegalStateException::new));
+        logger.info("Reading {} {}  arguments {} times took an average of {} milliseconds.", ProgrammerRepository.NUM_PROGRAMMERS, methodName, NUMBER_TRIALS, readTimes.build().average().orElseThrow(IllegalStateException::new));
     }
 
     private long getMillisBetween(Instant before, Instant after) {

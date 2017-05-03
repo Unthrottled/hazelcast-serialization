@@ -1,4 +1,4 @@
-package acari.io.pojo;
+package io.acari.pojo;
 
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable;
 
