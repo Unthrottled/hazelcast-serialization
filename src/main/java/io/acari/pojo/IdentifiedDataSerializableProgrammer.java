@@ -7,6 +7,14 @@ public class IdentifiedDataSerializableProgrammer extends DataSerializableProgra
     public static final int FACTORY_ID = 9000;
     public static final int OBJECT_ID = 9001;
 
+    /**
+     * No Arguments constructor is needed only if
+     * the class does not have one and a constructor
+     * with one or more arguments is present.
+     * <p>
+     * If no constructors are provided the java compiler
+     * will automagically put the no args constructor in.
+     */
     public IdentifiedDataSerializableProgrammer() {
         super();
     }
