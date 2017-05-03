@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExternalizableProgrammer implements Externalizable {
+    private static final long serialVersionUID = 6757860161913660513L;
     private String name;
     private int age;
     private ExternalizableComputer computer;

@@ -6,6 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class ExternalizableComputer implements Externalizable {
+    private static final long serialVersionUID = -6235153548793669030L;
     private String model;
     private String subModel;
     private int ram;

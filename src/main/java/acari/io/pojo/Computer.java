@@ -3,6 +3,7 @@ package acari.io.pojo;
 import java.io.Serializable;
 
 public class Computer implements Serializable {
+    private static final long serialVersionUID = -2198928914280590576L;
     private final String model;
     private final String subModel;
     private final int ram;

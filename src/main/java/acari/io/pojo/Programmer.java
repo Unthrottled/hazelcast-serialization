@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Programmer implements Serializable {
+    private static final long serialVersionUID = 7026171646349890369L;
     private final String name;
     private final int age;
     private final Computer computer;
