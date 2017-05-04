@@ -18,7 +18,7 @@ import java.io.IOException;
 @Configuration
 public class HazelcastFactory {
 
-    public static final DataSerializableFactory DATA_SERIALIZABLE_FACTORY = i -> {
+    private static final DataSerializableFactory DATA_SERIALIZABLE_FACTORY = i -> {
         switch (i) {
             case IdentifiedDataSerializableProgrammer.OBJECT_ID:
                 return new IdentifiedDataSerializableProgrammer();
