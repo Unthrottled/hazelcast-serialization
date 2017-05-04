@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.LinkedList;
@@ -56,6 +57,11 @@ public class ProgrammerRepository {
                 logger.warn("Problem creating programmers.", e);
             }
         }
+    }
+
+    @PreDestroy
+    public void shutDown(){
+        executorService.shutdown();
     }
 
     public Stream<Programmer> getProgrammers() {
