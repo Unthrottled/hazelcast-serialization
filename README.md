@@ -1,6 +1,6 @@
 # Hazelcast Serialization
 
-This is a Spring-Boot project consisting of almost all of the examples provided in this [post](http://blog.acari.ioj/ava/2017/05/01/Hazelcast-Performance-Serialization.html).
+This is a Spring-Boot project consisting of almost all of the examples provided in this [post](http://blog.acari.io/java/2017/05/01/Hazelcast-Performance-Serialization.html).
 Which covers optimizations that can be made to make your Hazelcast experience amazing!
 It has time trial tests for both a Hazelcast server and a Client connected to a vanilla Hazelcast server.
 
