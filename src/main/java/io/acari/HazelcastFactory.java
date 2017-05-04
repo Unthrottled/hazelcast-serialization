@@ -9,6 +9,7 @@ import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.nio.serialization.DataSerializableFactory;
 import io.acari.pojo.IdentifiedDataSerializableProgrammer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -41,6 +42,17 @@ public class HazelcastFactory {
     }
 
     /**
+     * Not taking advantage of hazelcast auto configure, and creating my own, because for the need for mutiple beans of the same type.
+     *
+     * @param config should be provided by the method above.
+     * @return one hazelcast instance with a data serializable factory for the programmer pojo.
+     */
+    @Bean
+    public HazelcastInstance serializationServer(Config config) {
+        return Hazelcast.newHazelcastInstance(config);
+    }
+
+    /**
      * Creates a plain vanilla hazelcast server bean with no
      * data serializable factory. So that an example with a Hazelcast lite client
      * can provide one.
@@ -56,11 +68,12 @@ public class HazelcastFactory {
      * Creates a client which will attach to the full fledged hazelcast instance
      * provided by the hazelcastServer bean.
      *
+     * @param hazelcastServer needed so the server is created before the client.
      * @return a hazelcast instance with a DataSerializableFactory for our programmer.
      * @throws IOException
      */
     @Bean
-    public HazelcastInstance hazelcastClient() throws IOException {
+    public HazelcastInstance hazelcastClient(@Qualifier("hazelcastServer") HazelcastInstance hazelcastServer) throws IOException {
         ClientConfig clientConfig = new XmlClientConfigBuilder("hazelcast-client.xml").build();
         clientConfig.getSerializationConfig().addDataSerializableFactory(IdentifiedDataSerializableProgrammer.FACTORY_ID,
                 DATA_SERIALIZABLE_FACTORY);

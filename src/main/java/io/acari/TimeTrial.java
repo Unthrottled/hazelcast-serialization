@@ -9,6 +9,7 @@ import com.hazelcast.core.IMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,40 +32,53 @@ public class TimeTrial {
     //Fun fact, Spring will auto-create a Hazelcast instance
     //If it detects Hazelcast on the classpath! It can be created
     //using a custom config, in the form of a bean! Neat!!
-    private final HazelcastInstance hazelcastInstance;
+    private final HazelcastInstance serializationServer;
+    private final HazelcastInstance hazelcastClient;
 
     @Autowired
-    public TimeTrial(ProgrammerRepository programmerRepository, HazelcastInstance hazelcastInstance) {
+    public TimeTrial(ProgrammerRepository programmerRepository,
+                     @Qualifier("serializationServer")
+                     HazelcastInstance hazelcastInstance,
+                     @Qualifier("hazelcastClient")
+                     HazelcastInstance hazelcastClient) {
         this.programmerRepository = programmerRepository;
-        this.hazelcastInstance = hazelcastInstance;
+        this.serializationServer = hazelcastInstance;
+        this.hazelcastClient = hazelcastClient;
     }
 
     @PreDestroy
     public void onlyDreams() {
         logger.info("Shutting Down Hazelcast");
-        hazelcastInstance.shutdown();
+        serializationServer.shutdown();
         logger.info("Hazelcast shutdown.");
     }
 
     @PostConstruct
     public void doWorkBruv() {
-        logger.info("Time trials ready to start!");
-        doTimeTrial(hazelcastInstance.getMap("programmer"),
+        logger.info("Time trials ready for Hazelcast server ready to start!");
+        runTimeTrialsForInstance(serializationServer);
+        logger.info("Time trials for Hazelcast server finished!");
+
+        logger.info("Time trials ready for Hazelcast client ready to start!");
+        runTimeTrialsForInstance(serializationServer);
+        logger.info("Time trials for Hazelcast client finished!");
+    }
+
+    private void runTimeTrialsForInstance(HazelcastInstance aHazelcastInstance) {
+        doTimeTrial(aHazelcastInstance.getMap("programmer"),
                 programmerRepository::getProgrammers, Programmer::getName, "Regular Serializable");
 
-        doTimeTrial(hazelcastInstance.getMap("programmer-ext"),
+        doTimeTrial(aHazelcastInstance.getMap("programmer-ext"),
                 () -> programmerRepository.getProgrammers().map(ExternalizableProgrammer::new),
                 ExternalizableProgrammer::getName, "Externalizable");
 
-        doTimeTrial(hazelcastInstance.getMap("programmer-ds"),
+        doTimeTrial(aHazelcastInstance.getMap("programmer-ds"),
                 () -> programmerRepository.getProgrammers().map(DataSerializableProgrammer::new),
                 DataSerializableProgrammer::getName, "Data Serializable");
 
-        doTimeTrial(hazelcastInstance.getMap("programmer-ids"),
+        doTimeTrial(aHazelcastInstance.getMap("programmer-ids"),
                 () -> programmerRepository.getProgrammers().map(IdentifiedDataSerializableProgrammer::new),
                 IdentifiedDataSerializableProgrammer::getName, "Identified Data Serializable");
-
-        logger.info("Time trials finished!");
     }
 
     private <T> void doTimeTrial(IMap<String, T> programmer, Supplier<Stream<T>> programmers, Function<T, String> idFunct, String methodName) {

@@ -28,6 +28,8 @@
         <cluster-members>
             <address>127.0.0.1:9009</address>
         </cluster-members>
+        <connection-timeout>600</connection-timeout>
+        <connection-attempt-limit>100</connection-attempt-limit>
 
     </network>
 
