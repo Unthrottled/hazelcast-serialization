@@ -33,7 +33,7 @@ public class ComputerRepository {
     }
 
     private Computer buildComputer(int ram, String make, String model, String subModel) {
-        return new Computer(ram, model, model, subModel);
+        return new Computer(ram, make, model, subModel);
     }
 
 }
